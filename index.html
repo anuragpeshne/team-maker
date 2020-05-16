@@ -1,1 +1,238 @@
-<h1>hello world</h1>
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+
+        <title>Team Maker</title>
+        <meta name="description" content="Make random equal teams">
+        <meta name="author" content="Anurag Peshne">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <style type="text/css">
+         body {
+             font-size: 20px;
+             margin: 50px 0;
+         }
+
+         h1 {
+             text-align:center;
+         }
+
+         input[type="text"], input[type="number"]
+         {
+             font-size:20px;
+             margin: 2px 5px;
+         }
+
+         button {
+             font-size: 20px;
+	           background-color:#44c767;
+	           border-radius:28px;
+	           border:1px solid #18ab29;
+	           display:inline-block;
+	           cursor:pointer;
+	           color:#ffffff;
+	           padding:8px 16px;
+	           text-decoration:none;
+	           text-shadow:0px 1px 0px #2f6627;
+         }
+         button:hover {
+	           background-color:#5cbf2a;
+         }
+         button:active {
+	           position:relative;
+	           top:1px;
+         }
+
+         #container {
+             min-width: 400px;
+             max-width: 800px;
+             margin: 0 auto;
+         }
+
+         form#input-form {
+             text-align: center;
+         }
+         .player-input-container {
+             margin: 5px;
+         }
+
+         li.option-container {
+             width: 100%;
+             padding: 10px;
+         }
+
+         div.team0, div.team1 {
+             float: left;
+             width: 50%;
+             padding: 5px 0;
+         }
+/*
+         div.team0 {
+             background-color: #FFCBA4;
+         }
+
+         div.team1 {
+             background-color: #FF8080;
+         }
+*/
+         span.player {
+             padding: 5px;
+             margin: 3px;
+             border: 1px solid #aaa;
+             border-radius: 4px;
+         }
+
+         div#options-container {
+             margin-top: 100px;
+         }
+        </style>
+
+    </head>
+
+    <body>
+        <script type="text/javascript">
+         function addPlayerRow() {
+             var playerDiv = document.createElement("div");
+             playerDiv.className = "player-input-container";
+
+             var input = document.createElement("input");
+             input.type = "text";
+             input.className = "player-name-input";
+             input.placeholder = "Player Name";
+
+             var skill = document.createElement("input");
+             skill.type = "number";
+             skill.className = "player-skill-input";
+             skill.placeholder = "skill: 0-10";
+
+             playerDiv.appendChild(input);
+             playerDiv.appendChild(skill);
+             document.getElementById("player-input-container").appendChild(playerDiv);
+         }
+
+         function normalize(list) {
+             var values = list.map(function(element) { return element.score; });
+             var min = Math.min(...values);
+             var max = Math.max(...values);
+             return list.map(function(element) {
+                 return {
+                     "name": element["name"],
+                     "score": (element["score"] - min) / max };
+             });
+         }
+
+         function cloneMap(m) {
+             var t = {};
+
+         }
+
+         function chooseAll(list, options) {
+             if (list === undefined || list === null || list.length === 0) {
+                 return options;
+             } else {
+                 var current = list[0];
+                 if (options === undefined || options.length === 0) {
+                     return chooseAll(
+                         list.slice(1),
+                         [
+                             [[current], []],
+                             [[], [current]]
+                         ]);
+                 } else {
+                     var newOptions = [];
+                     options.forEach(function(option) {
+                         var team1 = option[0].slice();
+                         var team2 = option[1].slice();
+                         team1.push(current);
+                         newOptions.push([team1, team2]);
+                     });
+                     options.forEach(function(option) {
+                         var team1 = option[0].slice();
+                         var team2 = option[1].slice();
+                         team2.push(current);
+                         newOptions.push([team1, team2]);
+                     });
+                     return chooseAll(list.slice(1), newOptions);
+                 }
+             }
+         }
+
+         function formSubmit(e) {
+             var players = []
+                 .slice
+                 .call(document.getElementsByClassName("player-input-container"))
+                 .map(function(row) {
+                     return {
+                         "name": row.firstChild.value,
+                         "score": parseInt(row.firstChild.nextSibling.value)
+                     };
+                 });
+             var sorted = players.sort(function(a, b) { return a.score - b.score; });
+             var normalized = normalize(sorted);
+             console.log(sorted);
+             console.log(normalized);
+             var options = chooseAll(normalized, []);
+             var optionsSorted = options.sort(function(option) {
+                 var team1 = option[0];
+                 var team2 = option[1];
+
+                 var score1 = team1.reduce((acc, current) => acc + current.score, 0);
+                 var score2 = team2.reduce((acc, current) => acc + current.score, 0);
+                 return score1 - score2;
+             });
+
+             console.log(optionsSorted);
+             populateOptions(optionsSorted);
+             e.preventDefault();
+         }
+
+         function populateOptions(options) {
+             var container = document.getElementById("options");
+             container.innerHTML = "";
+             container.style.display = "block";
+             for (var i = 0; i < Math.min(options.length, 3); i++) {
+                 var option = options[i];
+                 var optionContainer = document.createElement("li");
+                 optionContainer.className = "option-container";
+
+                 for (var teamNumber = 0; teamNumber < 2; teamNumber++) {
+                     var team = document.createElement("div");
+                     team.className = "team" + teamNumber;
+                     var teamObj = option[teamNumber];
+                     for (var j = 0; j < teamObj.length; j++) {
+                         var player = document.createElement("span");
+                         player.className = "player";
+                         player.innerHTML = teamObj[j].name;
+                         team.appendChild(player);
+                     }
+                     optionContainer.appendChild(team);
+                 }
+                 container.appendChild(optionContainer);
+             }
+         }
+
+         window.onload = function() {
+             document.getElementById("add-player-button")
+                     .addEventListener("click", addPlayerRow);
+
+             document.getElementById("input-form")
+                     .addEventListener("submit", formSubmit);
+         };
+        </script>
+        <div id="container">
+            <h1>Team Maker</h1>
+            <form id="input-form">
+                <div id="player-input-container"></div>
+                <div>
+                    <button type="button" id="add-player-button">Add Player</button>
+                    <button type="submit" id="go">Go</button>
+                </div>
+            </form>
+            <div id="options-container">
+                <h2>Options:</h2>
+                <ol id="options" style="display:none"></ol>
+            </div>
+        </div>
+    </body>
+</html>
