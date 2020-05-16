@@ -118,7 +118,8 @@
              return list.map(function(element) {
                  return {
                      "name": element["name"],
-                     "score": (element["score"] - min) / max };
+                     "score": (element["score"])// - min) / max
+                 };
              });
          }
 
@@ -182,7 +183,7 @@
                  var diff1 = Math.abs(score1 - score2);
 
                  team1 = option2[0];
-                 team2 = option2[0];
+                 team2 = option2[1];
 
                  score1 = team1.reduce((acc, current) => acc + current.score, 0);
                  score2 = team2.reduce((acc, current) => acc + current.score, 0);
@@ -200,7 +201,7 @@
              var container = document.getElementById("options");
              container.innerHTML = "";
              container.style.display = "block";
-             for (var i = 0; i < Math.min(options.length, 3); i++) {
+             for (var i = 0; i < Math.min(options.length, 5); i++) {
                  var option = options[i];
                  var optionContainer = document.createElement("li");
                  optionContainer.className = "option-container";
