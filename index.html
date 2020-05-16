@@ -24,6 +24,16 @@
              margin: 2px 5px;
          }
 
+         input[type="text"]
+         {
+             width: 10em;
+         }
+
+         input[type="number"]
+         {
+             width: 5em;
+         }
+
          button {
              font-size: 20px;
 	           background-color:#44c767;
@@ -60,6 +70,7 @@
          li.option-container {
              width: 100%;
              padding: 10px;
+             float: left;
          }
 
          div.team0, div.team1 {
@@ -67,20 +78,21 @@
              width: 50%;
              padding: 5px 0;
          }
-/*
-         div.team0 {
-             background-color: #FFCBA4;
+
+         div.team0 span {
+             background-color: #ff8f43;
          }
 
-         div.team1 {
-             background-color: #FF8080;
+         div.team1 span {
+             background-color: #e6f0fa;
          }
-*/
+
          span.player {
              padding: 5px;
              margin: 3px;
              border: 1px solid #aaa;
              border-radius: 4px;
+             display: inline-block;
          }
 
          div#options-container {
