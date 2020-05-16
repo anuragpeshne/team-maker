@@ -173,13 +173,22 @@
              console.log(sorted);
              console.log(normalized);
              var options = chooseAll(normalized, []);
-             var optionsSorted = options.sort(function(option) {
-                 var team1 = option[0];
-                 var team2 = option[1];
+             var optionsSorted = options.sort(function(option1, option2) {
+                 var team1 = option1[0];
+                 var team2 = option1[1];
 
                  var score1 = team1.reduce((acc, current) => acc + current.score, 0);
                  var score2 = team2.reduce((acc, current) => acc + current.score, 0);
-                 return score1 - score2;
+                 var diff1 = Math.abs(score1 - score2);
+
+                 team1 = option2[0];
+                 team2 = option2[0];
+
+                 score1 = team1.reduce((acc, current) => acc + current.score, 0);
+                 score2 = team2.reduce((acc, current) => acc + current.score, 0);
+                 var diff2 = Math.abs(score1 - score2);
+
+                 return diff1 - diff2;
              });
 
              console.log(optionsSorted);
