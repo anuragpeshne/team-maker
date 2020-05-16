@@ -115,6 +115,7 @@
 
              var skill = document.createElement("input");
              skill.type = "number";
+             skill.min = "1";
              skill.className = "player-skill-input";
              skill.placeholder = "skill: 0-10";
 
@@ -199,8 +200,20 @@
                  return diff1 - diff2;
              });
 
-             console.log(optionsSorted);
-             populateOptions(optionsSorted);
+             var seenTeamsSet = {};
+             var uniqueOptions = optionsSorted.filter(function(option) {
+                 var team1str = option[0].map(player => player.name).join();
+                 var team2str = option[1].map(player => player.name).join();
+                 if (team1str in seenTeamsSet) {
+                     return false;
+                 } else {
+                     seenTeamsSet[team1str] = true;
+                     seenTeamsSet[team2str] = true;
+                     return true;
+                 }
+             });
+             console.log(uniqueOptions);
+             populateOptions(uniqueOptions);
              e.preventDefault();
          }
 
