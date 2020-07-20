@@ -104,7 +104,7 @@
 
     <body>
         <script type="text/javascript">
-         function addPlayerRow() {
+         function addPlayerRow(name = "", score = "") {
              var playerDiv = document.createElement("div");
              playerDiv.className = "player-input-container";
 
@@ -112,12 +112,15 @@
              input.type = "text";
              input.className = "player-name-input";
              input.placeholder = "Player Name";
+             input.value = name;
 
              var skill = document.createElement("input");
              skill.type = "number";
-             skill.min = "1";
+             //skill.min = "1";
+             skill.step = 0.001;
              skill.className = "player-skill-input";
              skill.placeholder = "skill: 0-10";
+             skill.value = score;
 
              playerDiv.appendChild(input);
              playerDiv.appendChild(skill);
@@ -242,12 +245,33 @@
              }
          }
 
+         // from https://stackoverflow.com/a/5448635
+         function getSearchParameters() {
+             var prmstr = window.location.search.substr(1);
+             return prmstr != null && prmstr != "" ? transformToAssocArray(prmstr) : {};
+         }
+
+         function transformToAssocArray( prmstr ) {
+             var params = {};
+             var prmarr = prmstr.split("&");
+             for ( var i = 0; i < prmarr.length; i++) {
+                 var tmparr = prmarr[i].split("=");
+                 params[tmparr[0]] = tmparr[1];
+             }
+             return params;
+         }
+
          window.onload = function() {
              document.getElementById("add-player-button")
                      .addEventListener("click", addPlayerRow);
 
              document.getElementById("input-form")
                      .addEventListener("submit", formSubmit);
+
+             var params = getSearchParameters();
+             for (var key in params) {
+                 addPlayerRow(key, params[key]);
+             }
          };
         </script>
         <div id="container">
