@@ -177,7 +177,7 @@
                  .map(function(row) {
                      return {
                          "name": row.firstChild.value,
-                         "score": parseInt(row.firstChild.nextSibling.value)
+                         "score": parseFloat(row.firstChild.nextSibling.value)
                      };
                  });
              var sorted = players.sort(function(a, b) { return a.score - b.score; });
